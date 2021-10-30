@@ -11,10 +11,15 @@ const forecast = (latitude, longitude, callback) => {
             callback(body.message, undefined);
         }else {
             const date = new Date();
-            const rainPercentage = (body.daily[date.getDay()].rain) * 100;
+            const forecast = {
+                rainPercentage: (body.daily[date.getDay()].rain) * 100,
+                summary: body.current.weather[0].main,
+                feelsLike: parseInt(body.current.feels_like) - 273,
+                temperature: parseInt(body.current.temp) - 273
+            }
             callback(undefined, {
                 temperature: parseInt(body.current.temp) - 273,
-                message: `It is currently ${parseInt(body.current.temp) - 273} celcius degrees out. There is a ${rainPercentage ? rainPercentage : '0'}% chance of rain.`
+                message: `${forecast.summary}. It is currently ${forecast.temperature} celcius degrees out, but feels like ${forecast.feelsLike}. There is a ${forecast.rainPercentage ? forecast.rainPercentage : '0'}% chance of rain.`
             });
         }
     });
